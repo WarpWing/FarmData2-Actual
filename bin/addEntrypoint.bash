@@ -128,6 +128,10 @@ echo ""
 # ****
 # *** NEED TO DEAL WITH Permissions - ????
 # ***
+# Create the feature branch
+FEATURE_BRANCH_NAME="add_$ENTRY_POINT""_entry_point"
+git checkout -b "$FEATURE_BRANCH_NAME" development
+error_check "Failed to create feature branch $FEATURE_BRANCH_NAME."
 
 # shellcheck disable=SC1003
 DISPLAY_DRUPAL_ROUTE=$(echo "$DRUPAL_ROUTE" | tr -d '\\')
