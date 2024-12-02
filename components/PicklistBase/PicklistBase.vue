@@ -25,8 +25,8 @@
                 variant="primary"
                 v-on:click="handleAllButton()"
               >
-                <span v-if="allPicked">🚫 Clear All</span>
-                <span v-else>✅ Select All</span>
+                <span v-if="allPicked">🚫 All</span>
+                <span v-else>✅ All</span>
               </BButton>
               <BButton
                 id="picklist-units-button"
@@ -37,8 +37,8 @@
                 variant="primary"
                 v-on:click="handleUnitsButton()"
               >
-                <span v-if="allPicked">🚫 Clear {{ units }}</span>
-                <span v-else>✅ Max {{ units }}</span>
+                <span v-if="allPicked">🚫 {{ units }}</span>
+                <span v-else>✅ {{ units }}</span>
               </BButton>
             </BTh>
             <BTh
