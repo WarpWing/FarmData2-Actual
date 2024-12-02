@@ -28,13 +28,12 @@
            id="picker-all-button"
            data-cy="picker-all-button"
            size="sm"
-           :variant="checked.length === options.length ? 'danger' : 'primary'"
+           :variant="primary"
            v-on:click="pickAll"
           >
            <span v-if="checked.length === options.length">🚫 All</span>
            <span v-else>✅ All</span>
          </BButton>
-          >
         </div>
       </template>
 
