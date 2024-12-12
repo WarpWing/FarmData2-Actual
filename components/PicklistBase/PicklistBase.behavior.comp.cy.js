@@ -142,4 +142,82 @@ describe('Test the PicklistBase component behavior', () => {
     cy.get('[data-cy="picklist-row-0"]').contains('Item C');
     cy.get('[data-cy="picklist-row-1"]').contains('Item D');
   });
+
+  it('disables picklist buttons when info overlay is shown', () => {
+    cy.mount(PicklistBase, {
+      props: {
+        rows: [
+          { name: 'Item 1', quantity: 5, location: 'GHANA', details: 'Info 1' },
+          { name: 'Item 2', quantity: 3, location: 'GHANA', details: 'Info 2' },
+        ],
+        columns: ['name', 'quantity', 'location'],
+        labels: { name: 'Name', quantity: 'Quantity', location: 'Location', details: 'Details' },
+        picked: new Map(),
+        showInfoIcons: true
+      },
+    });
+
+    cy.get('[data-cy="picklist-info-icon-0"]').click();
+    cy.get('[data-cy="picklist-all-button"]').should('be.disabled');
+    cy.get('[data-cy="picklist-checkbox-0"]').should('be.disabled');
+  });
+
+  it('toggles between checkmark and x icons for All button', () => {
+    cy.mount(PicklistBase, {
+      props: {
+        rows: [
+          { name: 'Item 1', quantity: 5, location: 'GHANA' },
+          { name: 'Item 2', quantity: 3, location: 'GHANA' },
+        ],
+        columns: ['name', 'quantity', 'location'],
+        labels: { name: 'Name', quantity: 'Quantity', location: 'Location' },
+        picked: new Map(),
+      },
+    });
+
+    cy.get('[data-cy="picklist-all-button"]').contains('✅ All');
+    cy.get('[data-cy="picklist-all-button"]').click();
+    cy.get('[data-cy="picklist-all-button"]').contains('🚫 All');
+    cy.get('[data-cy="picklist-all-button"]').click();
+    cy.get('[data-cy="picklist-all-button"]').contains('✅ All');
+  });
+
+  it('toggles between checkmark and x icons for Units button', () => {
+    cy.mount(PicklistBase, {
+      props: {
+        rows: [
+          { name: 'Item 1', quantity: 5, location: 'GHANA' },
+          { name: 'Item 2', quantity: 3, location: 'GHANA' },
+        ],
+        columns: ['name', 'quantity', 'location'],
+        labels: { name: 'Name', quantity: 'Quantity', location: 'Location' },
+        picked: new Map(),
+        units: 'Trays',
+        quantityAttribute: 'quantity',
+      },
+    });
+
+    cy.get('[data-cy="picklist-units-button"]').contains('✅ Trays');
+    cy.get('[data-cy="picklist-units-button"]').click();
+    cy.get('[data-cy="picklist-units-button"]').contains('🚫 Trays');
+    cy.get('[data-cy="picklist-units-button"]').click();
+    cy.get('[data-cy="picklist-units-button"]').contains('✅ Trays');
+  });
+
+  it('hides header button when showAllButton is false', () => {
+    cy.mount(PicklistBase, {
+      props: {
+        rows: [
+          { name: 'Item 1', quantity: 5, location: 'GHANA' },
+          { name: 'Item 2', quantity: 3, location: 'GHANA' },
+        ],
+        columns: ['name', 'quantity', 'location'],
+        labels: { name: 'Name', quantity: 'Quantity', location: 'Location' },
+        picked: new Map(),
+        showAllButton: false
+      },
+    });
+
+    cy.get('[data-cy="picklist-all-button"]').should('not.exist');
+  });
 });
