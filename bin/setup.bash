@@ -78,7 +78,11 @@ echo "      - How would you like to authenticate GitHub CLI?"
 echo "        - Login with a web browser"
 echo "          - Use your GitHub username and password to log in."
 echo ""
-gh auth login --hostname GitHub.com
+while ! gh auth login --hostname GitHub.com || ! gh api user &> /dev/null; do
+    echo "Authentication failed. Clearing credentials and trying again..."
+    gh auth logout --hostname GitHub.com &> /dev/null
+    read -p "Press Enter to retry or Ctrl+C to exit..."
+done
 echo "  Authenticated."
 
 echo ""
