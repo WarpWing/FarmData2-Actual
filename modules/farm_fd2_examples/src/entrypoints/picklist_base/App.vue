@@ -271,13 +271,18 @@ export default {
     toggleFirstRow() {
       const firstRow = this.rows[0];
       const firstRowIndex = this.rows.indexOf(firstRow);
-
-      if (this.form.picked.has(firstRowIndex)) {
-        this.form.picked.delete(firstRowIndex);
+      const newPicked = new Map(this.form.picked);
+      
+      if (newPicked.has(firstRowIndex)) {
+        newPicked.delete(firstRowIndex);
       } else {
-        this.form.picked.set(firstRowIndex, firstRow);
+        newPicked.set(firstRowIndex, {
+          row: firstRow,
+          picked: 1  
+        });
       }
-    },
+      this.form.picked = newPicked;
+    }
   },
   created() {
     this.createdCount++;
