@@ -277,6 +277,7 @@ export default {
       } else {
         this.form.picked.set(firstRowIndex, firstRow);
       }
+    },
   },
   created() {
     this.createdCount++;
