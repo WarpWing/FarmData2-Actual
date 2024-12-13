@@ -174,4 +174,73 @@ describe('Test the default PickerBase content', () => {
           .should('have.class', 'is-invalid');
       });
   });
+
+  it('Test All button shows "✅ All" initially with no selections', () => {
+    cy.mount(PickerBase, {
+      props: {
+        label: 'Picker',
+        options: ['Option 1', 'Option 2', 'Option 3', 'Option 4'],
+        invalidFeedbackText: 'Invalid feedback text.',
+      },
+    });
+
+    cy.get('[data-cy="picker-all-button"]').should('contain', '✅ All');
+  });
+
+  it('Test All button shows "🚫 All" when all items are selected', () => {
+    cy.mount(PickerBase, {
+      props: {
+        label: 'Picker',
+        options: ['Option 1', 'Option 2', 'Option 3', 'Option 4'],
+        picked: ['Option 1', 'Option 2', 'Option 3', 'Option 4'],
+        invalidFeedbackText: 'Invalid feedback text.',
+      },
+    });
+
+    cy.get('[data-cy="picker-all-button"]').should('contain', '🚫 All');
+  });
+
+  it('Test All button text toggles when clicked', () => {
+    cy.mount(PickerBase, {
+      props: {
+        label: 'Picker',
+        options: ['Option 1', 'Option 2', 'Option 3', 'Option 4'],
+        invalidFeedbackText: 'Invalid feedback text.',
+      },
+    });
+
+    cy.get('[data-cy="picker-all-button"]')
+      .should('contain', '✅ All')
+      .click()
+      .should('contain', '🚫 All')
+      .click()
+      .should('contain', '✅ All');
+  });
+
+  it('Test All button text updates when options are selected individually', () => {
+    cy.mount(PickerBase, {
+      props: {
+        label: 'Picker',
+        options: ['Option 1', 'Option 2', 'Option 3', 'Option 4'],
+        invalidFeedbackText: 'Invalid feedback text.',
+      },
+    });
+
+    cy.get('[data-cy="picker-all-button"]').should('contain', '✅ All');
+    
+    cy.get('[data-cy="picker-options"]')
+      .find('input')
+      .each(($checkbox) => {
+        cy.wrap($checkbox).click();
+      });
+
+    cy.get('[data-cy="picker-all-button"]').should('contain', '🚫 All');
+    
+    cy.get('[data-cy="picker-options"]')
+      .find('input')
+      .first()
+      .click();
+
+    cy.get('[data-cy="picker-all-button"]').should('contain', '✅ All');
+  });
 });
