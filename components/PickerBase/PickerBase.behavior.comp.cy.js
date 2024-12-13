@@ -226,4 +226,83 @@ describe('Test the PickerBase component behavior', () => {
         });
     });
   });
+  
+  it('should initially show "✅ All" when no items are selected', () => {
+    cy.get('[data-cy="picker-all-button"]')
+      .should('contain', '✅ All');
+  });
+
+  it('should show "🚫 All" when all items are selected', () => {
+    cy.get('[data-cy="picker-all-button"]').click();
+    
+    cy.get('[data-cy="picker-all-button"]')
+      .should('contain', '🚫 All');
+    
+    cy.get('[data-cy="picker-options"]')
+      .find('input[type="checkbox"]')
+      .should('have.length', 3)
+      .should('be.checked');
+  });
+
+  it('should toggle between selecting all and none when clicked', () => {
+    cy.get('[data-cy="picker-options"]')
+      .find('input[type="checkbox"]:checked')
+      .should('have.length', 0);
+    
+    cy.get('[data-cy="picker-all-button"]').click();
+    cy.get('[data-cy="picker-options"]')
+      .find('input[type="checkbox"]:checked')
+      .should('have.length', 3);
+    cy.get('[data-cy="picker-all-button"]')
+      .should('contain', '🚫 All');
+    
+    cy.get('[data-cy="picker-all-button"]').click();
+    cy.get('[data-cy="picker-options"]')
+      .find('input[type="checkbox"]:checked')
+      .should('have.length', 0);
+    cy.get('[data-cy="picker-all-button"]')
+      .should('contain', '✅ All');
+  });
+
+  it('should update button text when selections are made manually', () => {
+    cy.get('[data-cy="picker-options"]')
+      .find('input[type="checkbox"]')
+      .each(($checkbox) => {
+        cy.wrap($checkbox).click();
+      });
+    
+    cy.get('[data-cy="picker-all-button"]')
+      .should('contain', '🚫 All');
+    
+    cy.get('[data-cy="picker-options"]')
+      .find('input[type="checkbox"]')
+      .first()
+      .click();
+    
+    cy.get('[data-cy="picker-all-button"]')
+      .should('contain', '✅ All');
+  });
+
+  it('should emit correct picked values when using All button', () => {
+    const onUpdatePicked = cy.spy().as('updatePickedSpy');
+
+    cy.mount(PickerBase, {
+      props: {
+        label: 'Test Picker',
+        invalidFeedbackText: 'Please select at least one option',
+        options: ['Option 1', 'Option 2', 'Option 3'],
+        showAllButton: true,
+        required: false,
+        'onUpdate:picked': onUpdatePicked
+      }
+    });
+
+    cy.get('[data-cy="picker-all-button"]').click();
+    
+    cy.get('@updatePickedSpy').should('have.been.calledWith', ['Option 1', 'Option 2', 'Option 3']);
+    
+    cy.get('[data-cy="picker-all-button"]').click();
+    
+    cy.get('@updatePickedSpy').should('have.been.calledWith', []);
+  });
 });

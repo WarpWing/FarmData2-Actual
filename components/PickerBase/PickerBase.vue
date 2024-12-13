@@ -28,7 +28,7 @@
            id="picker-all-button"
            data-cy="picker-all-button"
            size="sm"
-           :variant="primary"
+           variant="primary"
            v-on:click="pickAll"
           >
            <span v-if="checked.length === options.length">🚫 All</span>
