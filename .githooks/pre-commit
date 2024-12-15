@@ -34,6 +34,47 @@ check_modified_staged_files() {
   return 1  # No modified staged files found
 }
 
+# Function to check Cypress test files for .only
+check_test_only() {
+  local files=$(git diff --cached --name-only --diff-filter=d | grep '\.cy\.js$' || true)
+  if [ -n "$files" ]; then
+    echo "Checking for .only in Cypress test files..."
+    for file in $files; do
+      if grep -n "\.only" "$file" > /dev/null; then
+        echo "Error: Found .only in $file"
+        echo "Please remove .only before committing."
+        return 1
+      fi
+    done
+  fi
+  return 0
+}
+
+# Function to check Cypress test files for console.log
+check_console_log() {
+  local files=$(git diff --cached --name-only --diff-filter=d | grep '\.cy\.js$' || true)
+  if [ -n "$files" ]; then
+    echo "Checking for console.log in Cypress test files..."
+    for file in $files; do
+      if grep -n "console\.log" "$file" > /dev/null; then
+        echo "Error: Found console.log in $file"
+        echo "Please remove console.log statements before committing."
+        return 1
+      fi
+    done
+  fi
+  return 0
+}
+
+# Run all checks
+if ! check_test_only; then
+  exit 255
+fi
+
+if ! check_console_log; then
+  exit 255
+fi
+
 # For all other branches, run the pre-commit checks using lint-staged.
 if npm run check:staged; then
   # Check if any staged files were modified during the pre-commit checks
