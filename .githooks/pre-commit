@@ -66,6 +66,72 @@ check_console_log() {
   return 0
 }
 
+# Function to get component name from file path
+get_component_name() {
+  local file="$1"
+  basename "$file" .vue
+}
+
+# Function to find all test files for a component
+find_component_tests() {
+  local component_name="$1"
+  find . -name "${component_name}.*.cy.js"
+}
+
+# Function to determine which tests to skip
+get_tests_to_skip() {
+  local staged_files=$(git diff --cached --name-only --diff-filter=d)
+  local tests_to_skip=()
+  
+  # Check for library file changes
+  if echo "$staged_files" | grep -q "^library/.*\.js$\|/lib\.js$"; then
+    echo "Library files changed - skipping individual test runs as they'll be covered by library tests"
+    tests_to_skip+=("*")
+    return
+  fi
+  
+  # Process Vue component changes
+  for file in $staged_files; do
+    if [[ "$file" =~ \.vue$ ]]; then
+      local component_name=$(get_component_name "$file")
+      local component_tests=$(find_component_tests "$component_name")
+      if [ -n "$component_tests" ]; then
+        for test in $component_tests; do
+          tests_to_skip+=("$test")
+        done
+      fi
+    fi
+  done
+  
+  echo "${tests_to_skip[@]}"
+}
+
+# Function to get list of tests that need to be run
+get_tests_to_run() {
+  local staged_files=$(git diff --cached --name-only --diff-filter=d)
+  local skip_tests=($(get_tests_to_skip))
+  local tests_to_run=()
+  
+  # Process all staged test files
+  for file in $staged_files; do
+    if [[ "$file" =~ \.cy\.js$ ]]; then
+      local skip=false
+      for skip_pattern in "${skip_tests[@]}"; do
+        if [[ "$file" == $skip_pattern ]] || [[ "$skip_pattern" == "*" ]]; then
+          skip=true
+          break
+        fi
+      done
+      
+      if [ "$skip" = false ]; then
+        tests_to_run+=("$file")
+      fi
+    fi
+  done
+  
+  echo "${tests_to_run[@]}"
+}
+
 # Run all checks
 if ! check_test_only; then
   exit 255
@@ -74,6 +140,12 @@ fi
 if ! check_console_log; then
   exit 255
 fi
+
+# Get the list of tests to run
+TESTS_TO_RUN=$(get_tests_to_run)
+
+# Set environment variable for npm script to use
+export CYPRESS_TESTS_TO_RUN="$TESTS_TO_RUN"
 
 # For all other branches, run the pre-commit checks using lint-staged.
 if npm run check:staged; then
