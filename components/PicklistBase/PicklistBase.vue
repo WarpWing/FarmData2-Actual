@@ -542,17 +542,26 @@ export default {
       this.sortOrder = sortOrder;
 
       const sorted = [...this.sortedRows].sort((a, b) => {
-        if (a[this.sortColumn] < b[this.sortColumn]) {
-          return this.sortOrder === 'asc' ? -1 : 1;
-        } else if (a[this.sortColumn] > b[this.sortColumn]) {
-          return this.sortOrder === 'asc' ? 1 : -1;
+        let aVal = a[this.sortColumn];
+        let bVal = b[this.sortColumn];
+
+        if (isNaN(aVal) || isNaN(bVal)) {
+          aVal = aVal.toString().toLowerCase();
+          bVal = bVal.toString().toLowerCase();
         }
-        return 0;
+
+        if (aVal < bVal) {
+          return this.sortOrder === 'asc' ? -1 : 1;
+        } else if (aVal > bVal) {
+          return this.sortOrder === 'asc' ? 1 : -1;
+        } else {
+          return 0;
+        }
       });
 
       const newPickedRows = new Array(this.rows.length).fill(0);
       const newQuantityOptionsMap = new Map();
-      
+
       sorted.forEach((sortedRow, index) => {
         const originalIndex = this.rows.indexOf(sortedRow);
         if (this.picked.has(originalIndex)) {

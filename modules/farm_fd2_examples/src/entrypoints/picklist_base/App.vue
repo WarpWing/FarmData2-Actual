@@ -210,16 +210,16 @@ export default {
         },
         {
           c1: 'A',
-          c2: 2,
+          c2: 25,
           c3: 'X',
-          stuff: 'A, 2, X',
+          stuff: 'A, 25, X',
           quantity: 2,
         },
         {
           c1: 'D',
           c2: 7,
-          c3: 'Z',
-          stuff: 'D, 7, Z',
+          c3: 5,
+          stuff: 'D, 7, 5',
           quantity: 3,
         },
         {
@@ -272,17 +272,17 @@ export default {
       const firstRow = this.rows[0];
       const firstRowIndex = this.rows.indexOf(firstRow);
       const newPicked = new Map(this.form.picked);
-      
+
       if (newPicked.has(firstRowIndex)) {
         newPicked.delete(firstRowIndex);
       } else {
         newPicked.set(firstRowIndex, {
           row: firstRow,
-          picked: 1  
+          picked: 1,
         });
       }
       this.form.picked = newPicked;
-    }
+    },
   },
   created() {
     this.createdCount++;
