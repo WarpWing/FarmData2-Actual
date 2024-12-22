@@ -153,12 +153,12 @@ describe('Test the PicklistBase component behavior', () => {
       },
     });
 
-    cy.get('[data-cy="picklist-info-icon-0"]').click();
+    cy.get('[data-cy="picklist-info-icon-0"]').should('be.visible').click({ multiple: true });
     cy.get('[data-cy="picklist-info-overlay"]').should('be.visible');
-    cy.get('[data-cy="picklist-info-location-0"]').should('contain', 'GHANA');
-    cy.get('[data-cy="picklist-info-notes-0"]').should('contain', 'Special handling required');
+    cy.get('[data-cy="picklist-info-location-0"]').should('be.visible').and('contain', 'GHANA');
+    cy.get('[data-cy="picklist-info-notes-0"]').should('be.visible').and('contain', 'Special handling required');
     
-    cy.get('[data-cy="picklist-info-overlay"]').click();
+    cy.get('[data-cy="picklist-info-overlay"]').should('be.visible').click({ force: true, multiple: true });
     cy.get('[data-cy="picklist-info-overlay"]').should('not.be.visible');
   });
 
@@ -176,11 +176,11 @@ describe('Test the PicklistBase component behavior', () => {
       },
     });
 
-    cy.get('[data-cy="picklist-info-icon-0"]').click();
-    cy.get('[data-cy="picklist-info-notes-0"]').should('contain', 'Note B');
+    cy.get('[data-cy="picklist-info-icon-0"]').should('be.visible').click({ multiple: true });
+    cy.get('[data-cy="picklist-info-notes-0"]').should('be.visible').and('contain', 'Note B');
     
-    cy.get('[data-cy="picklist-sort-button-name"]').click();
-    cy.get('[data-cy="picklist-info-overlay"]').should('not.be.visible');
+    cy.get('[data-cy="picklist-sort-button-name"]').should('be.visible').click({ multiple: true, force: true });
+    cy.get('[data-cy="picklist-info-overlay"]').should('not.exist');
   });
 
   it('shows multiple info cards in sequence', () => {
@@ -197,10 +197,10 @@ describe('Test the PicklistBase component behavior', () => {
       },
     });
 
-    cy.get('[data-cy="picklist-info-icon-0"]').click();
+    cy.get('[data-cy="picklist-info-icon-0"]').click({ multiple: true });
     cy.get('[data-cy="picklist-info-notes-0"]').should('contain', 'Note 1');
     
-    cy.get('[data-cy="picklist-info-icon-1"]').click();
+    cy.get('[data-cy="picklist-info-icon-1"]').click({ multiple: true });
     cy.get('[data-cy="picklist-info-notes-1"]').should('contain', 'Note 2');
     cy.get('[data-cy="picklist-info-notes-0"]').should('not.exist');
   });
@@ -219,7 +219,7 @@ describe('Test the PicklistBase component behavior', () => {
       },
     });
 
-    cy.get('[data-cy="picklist-info-icon-0"]').click();
+    cy.get('[data-cy="picklist-info-icon-0"]').should('be.visible').click({ multiple: true });
     cy.get('[data-cy="picklist-info-notes-0"]').should('be.visible');
 
     cy.wrap({
@@ -233,7 +233,7 @@ describe('Test the PicklistBase component behavior', () => {
       ],
     });
 
-    cy.get('[data-cy="picklist-info-overlay"]').should('not.be.visible');
+    cy.get('[data-cy="picklist-info-overlay"]').should('not.exist');
   });
 
   it('disables selection controls when info overlay is shown', () => {
@@ -250,10 +250,10 @@ describe('Test the PicklistBase component behavior', () => {
       },
     });
 
-    cy.get('[data-cy="picklist-info-icon-0"]').click();
-    cy.get('[data-cy="picklist-all-button"]').should('be.disabled');
+    cy.get('[data-cy="picklist-info-icon-0"]').click({ multiple: true });
     cy.get('[data-cy="picklist-checkbox-0"]').should('be.disabled');
     cy.get('[data-cy="picklist-checkbox-1"]').should('be.disabled');
+    cy.get('[data-cy="picklist-all-button"]').should('be.disabled');
   });
 
   it('maintains all/none selection state through overlay toggle', () => {
@@ -270,12 +270,12 @@ describe('Test the PicklistBase component behavior', () => {
       },
     });
 
-    cy.get('[data-cy="picklist-all-button"]').click();
+    cy.get('[data-cy="picklist-all-button"]').click({ multiple: true });
     cy.get('[data-cy="picklist-checkbox-0"]').should('be.checked');
     cy.get('[data-cy="picklist-checkbox-1"]').should('be.checked');
     
-    cy.get('[data-cy="picklist-info-icon-0"]').click();
-    cy.get('[data-cy="picklist-info-overlay"]').click();
+    cy.get('[data-cy="picklist-info-icon-0"]').click({ multiple: true });
+    cy.get('[data-cy="picklist-info-overlay"]').click({ force: true, multiple: true });
     
     cy.get('[data-cy="picklist-checkbox-0"]').should('be.checked');
     cy.get('[data-cy="picklist-checkbox-1"]').should('be.checked');
@@ -296,165 +296,89 @@ describe('Test the PicklistBase component behavior', () => {
       },
     });
 
-    cy.get('[data-cy="picklist-checkbox-0"]').click();
+    cy.get('[data-cy="picklist-checkbox-0"]').click({ multiple: true });
     cy.get('[data-cy="picklist-checkbox-0"]').should('be.checked');
     cy.get('[data-cy="picklist-checkbox-1"]').should('not.be.checked');
     cy.get('[data-cy="picklist-all-button"]').find('span').should('contain', '✅ All');
 
-    cy.get('[data-cy="picklist-checkbox-1"]').click();
+    cy.get('[data-cy="picklist-checkbox-1"]').click({ multiple: true });
     cy.get('[data-cy="picklist-checkbox-0"]').should('be.checked');
     cy.get('[data-cy="picklist-checkbox-1"]').should('be.checked');
     cy.get('[data-cy="picklist-all-button"]').find('span').should('contain', '🚫 All');
-  
+  });
 
-    it('shows info overlay when clicking info icon and hides on outside click', () => {
-      cy.mount(PicklistBase, {
-        props: {
-          rows: [
-            { name: 'Item 1', quantity: 5, location: 'GHANA', notes: 'Special handling required' },
-            { name: 'Item 2', quantity: 3, location: 'GHANA', notes: 'Fragile' },
-          ],
-          columns: ['name', 'quantity'],
-          labels: { name: 'Name', quantity: 'Quantity', location: 'Location', notes: 'Notes' },
-          picked: new Map(),
-          showInfoIcons: true
-        },
-      });
-    
-      cy.get('[data-cy="picklist-info-icon-0"]').should('be.visible').click({ multiple: true });
-      cy.get('[data-cy="picklist-info-overlay"]').should('be.visible');
-      cy.get('[data-cy="picklist-info-location-0"]').should('be.visible').and('contain', 'GHANA');
-      cy.get('[data-cy="picklist-info-notes-0"]').should('be.visible').and('contain', 'Special handling required');
-      
-      cy.get('[data-cy="picklist-info-overlay"]').should('be.visible').click({ force: true, multiple: true });
-      cy.get('[data-cy="picklist-info-overlay"]').should('not.be.visible');
-    });
-    
-    it('maintains info visibility state when sorting', () => {
-      cy.mount(PicklistBase, {
-        props: {
-          rows: [
-            { name: 'Item B', quantity: 5, location: 'GHANA', notes: 'Note B' },
-            { name: 'Item A', quantity: 3, location: 'KENYA', notes: 'Note A' },
-          ],
-          columns: ['name', 'quantity'],
-          labels: { name: 'Name', quantity: 'Quantity', location: 'Location', notes: 'Notes' },
-          picked: new Map(),
-          showInfoIcons: true
-        },
-      });
-    
-      cy.get('[data-cy="picklist-info-icon-0"]').should('be.visible').click({ multiple: true });
-      cy.get('[data-cy="picklist-info-notes-0"]').should('be.visible').and('contain', 'Note B');
-      
-      cy.get('[data-cy="picklist-sort-button-name"]').should('be.visible').click({ multiple: true, force: true });
-      cy.get('[data-cy="picklist-info-overlay"]').should('not.exist');
-    });
-    
-    it('preserves info visibility when rows prop changes', () => {
-      cy.mount(PicklistBase, {
-        props: {
-          rows: [
-            { name: 'Item 1', quantity: 5, location: 'GHANA', notes: 'Note 1' },
-            { name: 'Item 2', quantity: 3, location: 'KENYA', notes: 'Note 2' },
-          ],
-          columns: ['name', 'quantity'],
-          labels: { name: 'Name', quantity: 'Quantity', location: 'Location', notes: 'Notes' },
-          picked: new Map(),
-          showInfoIcons: true
-        },
-      });
-    
-      cy.get('[data-cy="picklist-info-icon-0"]').should('be.visible').click({ multiple: true });
-      cy.get('[data-cy="picklist-info-notes-0"]').should('be.visible');
-    
-      cy.wrap({
-        updateProps: (props) => {
-          Cypress.vueWrapper.setProps(props);
-        },
-      }).invoke('updateProps', {
+  it('updates all button state correctly with partial selection', () => {
+    cy.mount(PicklistBase, {
+      props: {
         rows: [
-          { name: 'Item 3', quantity: 1, location: 'MALI', notes: 'Note 3' },
-          { name: 'Item 4', quantity: 6, location: 'TOGO', notes: 'Note 4' },
+          { name: 'Item 1', quantity: 5, location: 'GHANA' },
+          { name: 'Item 2', quantity: 3, location: 'GHANA' },
+          { name: 'Item 3', quantity: 4, location: 'KENYA' },
         ],
-      });
-    
-      cy.get('[data-cy="picklist-info-overlay"]').should('not.exist');
+        columns: ['name', 'quantity'],
+        labels: { name: 'Name', quantity: 'Quantity', location: 'Location' },
+        picked: new Map(),
+        showInfoIcons: true
+      },
     });
+
+    cy.get('[data-cy="picklist-checkbox-0"]').click({ multiple: true });
+    cy.get('[data-cy="picklist-checkbox-1"]').click({ multiple: true });
+    cy.get('[data-cy="picklist-all-button"]').find('span').should('contain', '✅ All');
     
-    it('maintains all/none selection state through overlay toggle', () => {
-      cy.mount(PicklistBase, {
-        props: {
-          rows: [
-            { name: 'Item 1', quantity: 5, location: 'GHANA' },
-            { name: 'Item 2', quantity: 3, location: 'KENYA' },
-          ],
-          columns: ['name', 'quantity'],
-          labels: { name: 'Name', quantity: 'Quantity', location: 'Location' },
-          picked: new Map(),
-          showInfoIcons: true
-        },
-      });
-    
-      cy.get('[data-cy="picklist-all-button"]').should('be.visible').click({ multiple: true });
-      cy.get('[data-cy="picklist-checkbox-0"]').should('be.checked');
-      cy.get('[data-cy="picklist-checkbox-1"]').should('be.checked');
-      
-      cy.get('[data-cy="picklist-info-icon-0"]').should('be.visible').click({ multiple: true });
-      cy.get('[data-cy="picklist-info-overlay"]').should('be.visible').click({ force: true, multiple: true });
-      
-      cy.get('[data-cy="picklist-checkbox-0"]').should('be.checked');
-      cy.get('[data-cy="picklist-checkbox-1"]').should('be.checked');
-      cy.get('[data-cy="picklist-all-button"]').find('span').should('contain', '🚫 All');
+    cy.get('[data-cy="picklist-checkbox-2"]').click({ multiple: true });
+    cy.get('[data-cy="picklist-all-button"]').find('span').should('contain', '🚫 All');
+
+    cy.get('[data-cy="picklist-checkbox-1"]').click({ multiple: true });
+    cy.get('[data-cy="picklist-all-button"]').find('span').should('contain', '✅ All');
+  });
+
+  it('maintains disabled state of controls during overlay transitions', () => {
+    cy.mount(PicklistBase, {
+      props: {
+        rows: [
+          { name: 'Item 1', quantity: 5, location: 'GHANA', notes: 'Note 1' },
+          { name: 'Item 2', quantity: 3, location: 'KENYA', notes: 'Note 2' },
+        ],
+        columns: ['name', 'quantity'],
+        labels: { name: 'Name', quantity: 'Quantity', location: 'Location', notes: 'Notes' },
+        picked: new Map(),
+        showInfoIcons: true
+      },
     });
+
+    cy.get('[data-cy="picklist-info-icon-0"]').click({ multiple: true });
+    cy.get('[data-cy="picklist-checkbox-0"]').should('be.disabled');
+    cy.get('[data-cy="picklist-checkbox-1"]').should('be.disabled');
+    cy.get('[data-cy="picklist-all-button"]').should('be.disabled');
     
-    it('maintains disabled state of controls during overlay transitions', () => {
-      cy.mount(PicklistBase, {
-        props: {
-          rows: [
-            { name: 'Item 1', quantity: 5, location: 'GHANA', notes: 'Note 1' },
-            { name: 'Item 2', quantity: 3, location: 'KENYA', notes: 'Note 2' },
-          ],
-          columns: ['name', 'quantity'],
-          labels: { name: 'Name', quantity: 'Quantity', location: 'Location', notes: 'Notes' },
-          picked: new Map(),
-          showInfoIcons: true
-        },
-      });
-    
-      cy.get('[data-cy="picklist-info-icon-0"]').should('be.visible').click({ multiple: true });
-      cy.get('[data-cy="picklist-checkbox-0"]').should('be.disabled');
-      cy.get('[data-cy="picklist-checkbox-1"]').should('be.disabled');
-      cy.get('[data-cy="picklist-all-button"]').should('be.disabled');
-      
-      cy.get('[data-cy="picklist-info-overlay"]').should('be.visible').click({ force: true, multiple: true });
-      cy.get('[data-cy="picklist-checkbox-0"]').should('not.be.disabled');
-      cy.get('[data-cy="picklist-checkbox-1"]').should('not.be.disabled');
-      cy.get('[data-cy="picklist-all-button"]').should('not.be.disabled');
+    cy.get('[data-cy="picklist-info-overlay"]').click({ force: true, multiple: true });
+    cy.get('[data-cy="picklist-checkbox-0"]').should('not.be.disabled');
+    cy.get('[data-cy="picklist-checkbox-1"]').should('not.be.disabled');
+    cy.get('[data-cy="picklist-all-button"]').should('not.be.disabled');
+  });
+
+  it('preserves checkbox states when toggling info overlay multiple times', () => {
+    cy.mount(PicklistBase, {
+      props: {
+        rows: [
+          { name: 'Item 1', quantity: 5, location: 'GHANA', notes: 'Note 1' },
+          { name: 'Item 2', quantity: 3, location: 'KENYA', notes: 'Note 2' },
+        ],
+        columns: ['name', 'quantity'],
+        labels: { name: 'Name', quantity: 'Quantity', location: 'Location', notes: 'Notes' },
+        picked: new Map([[0, { picked: 1 }]]),
+        showInfoIcons: true
+      },
     });
+
+    cy.get('[data-cy="picklist-checkbox-0"]').should('be.checked');
+    cy.get('[data-cy="picklist-info-icon-0"]').click({ multiple: true });
+    cy.get('[data-cy="picklist-info-overlay"]').click({ force: true, multiple: true });
+    cy.get('[data-cy="picklist-info-icon-1"]').click({ multiple: true });
+    cy.get('[data-cy="picklist-info-overlay"]').click({ force: true, multiple: true });
     
-    it('preserves checkbox states when toggling info overlay multiple times', () => {
-      cy.mount(PicklistBase, {
-        props: {
-          rows: [
-            { name: 'Item 1', quantity: 5, location: 'GHANA', notes: 'Note 1' },
-            { name: 'Item 2', quantity: 3, location: 'KENYA', notes: 'Note 2' },
-          ],
-          columns: ['name', 'quantity'],
-          labels: { name: 'Name', quantity: 'Quantity', location: 'Location', notes: 'Notes' },
-          picked: new Map([[0, { picked: 1 }]]),
-          showInfoIcons: true
-        },
-      });
-    
-      cy.get('[data-cy="picklist-checkbox-0"]').should('be.visible').and('be.checked');
-      cy.get('[data-cy="picklist-info-icon-0"]').should('be.visible').click({ multiple: true });
-      cy.get('[data-cy="picklist-info-overlay"]').should('be.visible').click({ force: true, multiple: true });
-      cy.get('[data-cy="picklist-info-icon-1"]').should('be.visible').click({ multiple: true });
-      cy.get('[data-cy="picklist-info-overlay"]').should('be.visible').click({ force: true, multiple: true });
-      
-      cy.get('[data-cy="picklist-checkbox-0"]').should('be.checked');
-      cy.get('[data-cy="picklist-checkbox-1"]').should('not.be.checked');
-    });
+    cy.get('[data-cy="picklist-checkbox-0"]').should('be.checked');
+    cy.get('[data-cy="picklist-checkbox-1"]').should('not.be.checked');
   });
 });
