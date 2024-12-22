@@ -56,7 +56,7 @@ describe('Test the default PicklistBase content', () => {
         columns: ['name', 'quantity', 'location'],
         labels: { name: 'Name', quantity: 'Quantity', location: 'Location' },
         picked: new Map(),
-        units: 'Trays',
+        units: '✅ Trays',
         quantityAttribute: 'quantity',
         showValidityStyling: true,
         invalidFeedbackText: 'Please pick at least one item.',
