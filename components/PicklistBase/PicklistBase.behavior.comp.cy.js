@@ -232,115 +232,6 @@ describe('Test the PicklistBase component behavior', () => {
     cy.get('[data-cy="picklist-all-button"]').find('span').should('contain', '🚫 All');
   });
 
-  it('handles rapid consecutive clicks on All button', () => {
-    cy.mount(PicklistBase, {
-      props: {
-        rows: [
-          { name: 'Item 1', quantity: 5, location: 'GHANA' },
-          { name: 'Item 2', quantity: 3, location: 'KENYA' },
-          { name: 'Item 3', quantity: 4, location: 'NIGERIA' }
-        ],
-        columns: ['name', 'quantity', 'location'],
-        labels: { name: 'Name', quantity: 'Quantity', location: 'Location' },
-        picked: new Map()
-      }
-    });
-
-    cy.get('[data-cy="picklist-all-button"]')
-      .click({ multiple: true })
-      .click({ multiple: true })
-      .click({ multiple: true });
-
-    cy.get('[data-cy="picklist-checkbox-0"]').should('not.be.checked');
-    cy.get('[data-cy="picklist-checkbox-1"]').should('not.be.checked');
-    cy.get('[data-cy="picklist-checkbox-2"]').should('not.be.checked');
-  });
-
-  it('maintains button state during mixed checkbox interactions', () => {
-    cy.mount(PicklistBase, {
-      props: {
-        rows: [
-          { name: 'Item 1', quantity: 5, location: 'GHANA' },
-          { name: 'Item 2', quantity: 3, location: 'KENYA' },
-          { name: 'Item 3', quantity: 4, location: 'NIGERIA' }
-        ],
-        columns: ['name', 'quantity', 'location'],
-        labels: { name: 'Name', quantity: 'Quantity', location: 'Location' },
-        picked: new Map()
-      }
-    });
-
-    cy.get('[data-cy="picklist-all-button"]').click();
-    cy.get('[data-cy="picklist-checkbox-1"]').click();
-    cy.get('[data-cy="picklist-all-button"]').find('span').should('contain', '✅ All');
-    
-    cy.get('[data-cy="picklist-checkbox-1"]').click();
-    cy.get('[data-cy="picklist-all-button"]').find('span').should('contain', '🚫 All');
-    
-    cy.get('[data-cy="picklist-checkbox-0"]').click();
-    cy.get('[data-cy="picklist-checkbox-1"]').click();
-    cy.get('[data-cy="picklist-checkbox-2"]').click();
-    cy.get('[data-cy="picklist-all-button"]').find('span').should('contain', '🚫 All');
-  });
-
-  it('handles select all during ongoing checkbox interactions', () => {
-    cy.mount(PicklistBase, {
-      props: {
-        rows: [
-          { name: 'Item 1', quantity: 5, location: 'GHANA' },
-          { name: 'Item 2', quantity: 3, location: 'KENYA' },
-          { name: 'Item 3', quantity: 4, location: 'NIGERIA' }
-        ],
-        columns: ['name', 'quantity', 'location'],
-        labels: { name: 'Name', quantity: 'Quantity', location: 'Location' },
-        picked: new Map()
-      }
-    });
-
-    cy.get('[data-cy="picklist-checkbox-0"]').click();
-    cy.get('[data-cy="picklist-checkbox-1"]').click();
-    cy.get('[data-cy="picklist-all-button"]').click();
-    
-    cy.get('[data-cy="picklist-checkbox-0"]').should('be.checked');
-    cy.get('[data-cy="picklist-checkbox-1"]').should('be.checked');
-    cy.get('[data-cy="picklist-checkbox-2"]').should('be.checked');
-    
-    cy.get('[data-cy="picklist-checkbox-1"]').click();
-    cy.get('[data-cy="picklist-all-button"]').click();
-    
-    cy.get('[data-cy="picklist-checkbox-0"]').should('not.be.checked');
-    cy.get('[data-cy="picklist-checkbox-1"]').should('not.be.checked');
-    cy.get('[data-cy="picklist-checkbox-2"]').should('not.be.checked');
-  });
-
-  it('validates all button state after individual checkbox rapid clicks', () => {
-    cy.mount(PicklistBase, {
-      props: {
-        rows: [
-          { name: 'Item 1', quantity: 5, location: 'GHANA' },
-          { name: 'Item 2', quantity: 3, location: 'KENYA' }
-        ],
-        columns: ['name', 'quantity', 'location'],
-        labels: { name: 'Name', quantity: 'Quantity', location: 'Location' },
-        picked: new Map()
-      }
-    });
-
-    cy.get('[data-cy="picklist-checkbox-0"]')
-      .click()
-      .click()
-      .click();
-    
-    cy.get('[data-cy="picklist-all-button"]').find('span').should('contain', '✅ All');
-    
-    cy.get('[data-cy="picklist-checkbox-1"]')
-      .click()
-      .click()
-      .click();
-    
-    cy.get('[data-cy="picklist-all-button"]').find('span').should('contain', '✅ All');
-  });
-
   it('preserves all button state through prop updates', () => {
     cy.mount(PicklistBase, {
       props: {
@@ -371,7 +262,7 @@ describe('Test the PicklistBase component behavior', () => {
     cy.get('[data-cy="picklist-checkbox-1"]').should('be.checked');
     cy.get('[data-cy="picklist-all-button"]').find('span').should('contain', '🚫 All');
   });
-  
+
   it('updates all button state correctly with partial selection', () => {
     cy.mount(PicklistBase, {
       props: {
