@@ -174,4 +174,124 @@ describe('Test the default PickerBase content', () => {
           .should('have.class', 'is-invalid');
       });
   });
+
+  it('Test default All button content with no selections', () => {
+    const readySpy = cy.spy().as('readySpy');
+
+    cy.mount(PickerBase, {
+      props: {
+        onReady: readySpy,
+        label: 'Picker',
+        options: ['Option 1', 'Option 2', 'Option 3'],
+        invalidFeedbackText: 'Invalid feedback text.',
+      },
+    });
+
+    cy.get('@readySpy')
+      .should('have.been.calledOnce')
+      .then(() => {
+        cy.get('[data-cy="picker-all-button"]')
+          .should('exist')
+          .should('have.class', 'btn-primary')
+          .should('have.class', 'btn-sm')
+          .should('contain.text', '✅ All');
+      });
+  });
+
+  it('Test All button content with all options selected', () => {
+    const readySpy = cy.spy().as('readySpy');
+
+    cy.mount(PickerBase, {
+      props: {
+        onReady: readySpy,
+        label: 'Picker',
+        options: ['Option 1', 'Option 2', 'Option 3'],
+        picked: ['Option 1', 'Option 2', 'Option 3'],
+        invalidFeedbackText: 'Invalid feedback text.',
+      },
+    });
+
+    cy.get('@readySpy')
+      .should('have.been.calledOnce')
+      .then(() => {
+        cy.get('[data-cy="picker-all-button"]')
+          .should('exist')
+          .should('have.class', 'btn-primary')
+          .should('have.class', 'btn-sm')
+          .should('contain.text', '🚫 All');
+      });
+  });
+
+  it('Test All button content with partial selection', () => {
+    const readySpy = cy.spy().as('readySpy');
+
+    cy.mount(PickerBase, {
+      props: {
+        onReady: readySpy,
+        label: 'Picker',
+        options: ['Option 1', 'Option 2', 'Option 3'],
+        picked: ['Option 1'],
+        invalidFeedbackText: 'Invalid feedback text.',
+      },
+    });
+
+    cy.get('@readySpy')
+      .should('have.been.calledOnce')
+      .then(() => {
+        cy.get('[data-cy="picker-all-button"]')
+          .should('exist')
+          .should('have.class', 'btn-primary')
+          .should('have.class', 'btn-sm')
+          .should('contain.text', '✅ All');
+      });
+  });
+
+  it('Test All button styling and position', () => {
+    const readySpy = cy.spy().as('readySpy');
+
+    cy.mount(PickerBase, {
+      props: {
+        onReady: readySpy,
+        label: 'Picker',
+        options: ['Option 1', 'Option 2', 'Option 3'],
+        invalidFeedbackText: 'Invalid feedback text.',
+      },
+    });
+
+    cy.get('@readySpy')
+      .should('have.been.calledOnce')
+      .then(() => {
+        cy.get('[data-cy="picker-label"]')
+          .parent()
+          .should('have.class', 'd-grid')
+          .should('have.class', 'd-md-flex');
+
+        cy.get('[data-cy="picker-all-button"]')
+          .should('exist')
+          .parent()
+          .should('have.class', 'd-grid')
+          .should('have.class', 'd-md-flex');
+      });
+  });
+
+  it('Test empty options array with All button', () => {
+    const readySpy = cy.spy().as('readySpy');
+
+    cy.mount(PickerBase, {
+      props: {
+        onReady: readySpy,
+        label: 'Picker',
+        options: [],
+        invalidFeedbackText: 'Invalid feedback text.',
+      },
+    });
+
+    cy.get('@readySpy')
+      .should('have.been.calledOnce')
+      .then(() => {
+        cy.get('[data-cy="picker-all-button"]')
+          .should('exist')
+          .should('contain.text', '✅ All');
+      });
+  });
 });
