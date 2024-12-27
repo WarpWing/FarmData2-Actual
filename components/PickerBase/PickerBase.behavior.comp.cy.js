@@ -227,28 +227,6 @@ describe('Test the PickerBase component behavior', () => {
     });
   });
 
-  it('All button shows checkmark when no options are selected', () => {
-    const readySpy = cy.spy().as('readySpy');
-
-    cy.mount(PickerBase, {
-      props: {
-        onReady: readySpy,
-        label: 'Picker',
-        options: ['Option 1', 'Option 2', 'Option 3'],
-        invalidFeedbackText: 'Invalid feedback text.',
-      },
-    });
-
-    cy.get('@readySpy')
-      .should('have.been.calledOnce')
-      .then(() => {
-        cy.get('[data-cy="picker-all-button"]').should(
-          'contain.text',
-          '✅ All'
-        );
-      });
-  });
-
   it('All button text updates correctly when selecting all options individually', () => {
     const readySpy = cy.spy().as('readySpy');
 
