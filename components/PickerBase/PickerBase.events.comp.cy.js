@@ -357,7 +357,7 @@ describe('Test the PickerBase component events', () => {
       .then(() => {
         cy.get('@validSpy').should('have.been.calledOnce');
         cy.get('@validSpy').should('have.been.calledWith', false);
-        
+
         cy.get('[data-cy="picker-all-button"]').click();
         cy.get('@validSpy').should('have.been.calledTwice');
         cy.get('@validSpy').should('have.been.calledWith', true);
@@ -385,7 +385,7 @@ describe('Test the PickerBase component events', () => {
       .then(() => {
         cy.get('@validSpy').should('have.been.calledOnce');
         cy.get('@validSpy').should('have.been.calledWith', true);
-        
+
         cy.get('[data-cy="picker-all-button"]').click();
         cy.get('@validSpy').should('have.been.calledTwice');
         cy.get('@validSpy').should('have.been.calledWith', false);
