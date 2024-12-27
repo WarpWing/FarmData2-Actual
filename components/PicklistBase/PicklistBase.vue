@@ -706,7 +706,6 @@ export default {
   margin-top: -3px;
 }
 
-
 #picklist-all-button,
 #picklist-units-button {
   display: inline-flex;

@@ -232,15 +232,20 @@ describe('Test the PicklistBase component behavior', () => {
           { name: 'Item 2', quantity: 3, location: 'KENYA', notes: 'Note 2' },
         ],
         columns: ['name', 'quantity'],
-        labels: { name: 'Name', quantity: 'Quantity', location: 'Location', notes: 'Notes' },
+        labels: {
+          name: 'Name',
+          quantity: 'Quantity',
+          location: 'Location',
+          notes: 'Notes',
+        },
         picked: new Map(),
-        showInfoIcons: true
+        showInfoIcons: true,
       },
     });
 
     cy.get('[data-cy="picklist-info-icon-0"]').click({ multiple: true });
     cy.get('[data-cy="picklist-info-notes-0"]').should('contain', 'Note 1');
-    
+
     cy.get('[data-cy="picklist-info-icon-1"]').click({ multiple: true });
     cy.get('[data-cy="picklist-info-notes-1"]').should('contain', 'Note 2');
     cy.get('[data-cy="picklist-info-notes-0"]').should('not.exist');
@@ -254,9 +259,14 @@ describe('Test the PicklistBase component behavior', () => {
           { name: 'Item 2', quantity: 3, location: 'KENYA', notes: 'Note 2' },
         ],
         columns: ['name', 'quantity'],
-        labels: { name: 'Name', quantity: 'Quantity', location: 'Location', notes: 'Notes' },
+        labels: {
+          name: 'Name',
+          quantity: 'Quantity',
+          location: 'Location',
+          notes: 'Notes',
+        },
         picked: new Map(),
-        showInfoIcons: true
+        showInfoIcons: true,
       },
     });
 
@@ -276,20 +286,25 @@ describe('Test the PicklistBase component behavior', () => {
         columns: ['name', 'quantity'],
         labels: { name: 'Name', quantity: 'Quantity', location: 'Location' },
         picked: new Map(),
-        showInfoIcons: true
+        showInfoIcons: true,
       },
     });
 
     cy.get('[data-cy="picklist-all-button"]').click({ multiple: true });
     cy.get('[data-cy="picklist-checkbox-0"]').should('be.checked');
     cy.get('[data-cy="picklist-checkbox-1"]').should('be.checked');
-    
+
     cy.get('[data-cy="picklist-info-icon-0"]').click({ multiple: true });
-    cy.get('[data-cy="picklist-info-overlay"]').click({ force: true, multiple: true });
-    
+    cy.get('[data-cy="picklist-info-overlay"]').click({
+      force: true,
+      multiple: true,
+    });
+
     cy.get('[data-cy="picklist-checkbox-0"]').should('be.checked');
     cy.get('[data-cy="picklist-checkbox-1"]').should('be.checked');
-    cy.get('[data-cy="picklist-all-button"]').find('span').should('contain', '🚫 All');
+    cy.get('[data-cy="picklist-all-button"]')
+      .find('span')
+      .should('contain', '🚫 All');
   });
 
   it('toggles selection when clicking individual checkboxes with overlay closed', () => {
@@ -302,19 +317,23 @@ describe('Test the PicklistBase component behavior', () => {
         columns: ['name', 'quantity'],
         labels: { name: 'Name', quantity: 'Quantity', location: 'Location' },
         picked: new Map(),
-        showInfoIcons: true
+        showInfoIcons: true,
       },
     });
 
     cy.get('[data-cy="picklist-checkbox-0"]').click({ multiple: true });
     cy.get('[data-cy="picklist-checkbox-0"]').should('be.checked');
     cy.get('[data-cy="picklist-checkbox-1"]').should('not.be.checked');
-    cy.get('[data-cy="picklist-all-button"]').find('span').should('contain', '✅ All');
+    cy.get('[data-cy="picklist-all-button"]')
+      .find('span')
+      .should('contain', '✅ All');
 
     cy.get('[data-cy="picklist-checkbox-1"]').click({ multiple: true });
     cy.get('[data-cy="picklist-checkbox-0"]').should('be.checked');
     cy.get('[data-cy="picklist-checkbox-1"]').should('be.checked');
-    cy.get('[data-cy="picklist-all-button"]').find('span').should('contain', '🚫 All');
+    cy.get('[data-cy="picklist-all-button"]')
+      .find('span')
+      .should('contain', '🚫 All');
   });
 
   it('preserves all button state through prop updates', () => {
@@ -322,16 +341,16 @@ describe('Test the PicklistBase component behavior', () => {
       props: {
         rows: [
           { name: 'Item 1', quantity: 5, location: 'GHANA' },
-          { name: 'Item 2', quantity: 3, location: 'KENYA' }
+          { name: 'Item 2', quantity: 3, location: 'KENYA' },
         ],
         columns: ['name', 'quantity', 'location'],
         labels: { name: 'Name', quantity: 'Quantity', location: 'Location' },
-        picked: new Map()
-      }
+        picked: new Map(),
+      },
     });
 
     cy.get('[data-cy="picklist-all-button"]').click();
-    
+
     cy.wrap({
       updateProps: (props) => {
         Cypress.vueWrapper.setProps(props);
@@ -339,13 +358,15 @@ describe('Test the PicklistBase component behavior', () => {
     }).invoke('updateProps', {
       rows: [
         { name: 'Item 1', quantity: 6, location: 'GHANA' },
-        { name: 'Item 2', quantity: 4, location: 'KENYA' }
-      ]
+        { name: 'Item 2', quantity: 4, location: 'KENYA' },
+      ],
     });
 
     cy.get('[data-cy="picklist-checkbox-0"]').should('be.checked');
     cy.get('[data-cy="picklist-checkbox-1"]').should('be.checked');
-    cy.get('[data-cy="picklist-all-button"]').find('span').should('contain', '🚫 All');
+    cy.get('[data-cy="picklist-all-button"]')
+      .find('span')
+      .should('contain', '🚫 All');
   });
 
   it('updates all button state correctly with partial selection', () => {
@@ -359,20 +380,24 @@ describe('Test the PicklistBase component behavior', () => {
         columns: ['name', 'quantity'],
         labels: { name: 'Name', quantity: 'Quantity', location: 'Location' },
         picked: new Map(),
-        showInfoIcons: true
+        showInfoIcons: true,
       },
     });
 
     cy.get('[data-cy="picklist-checkbox-0"]').click({ multiple: true });
     cy.get('[data-cy="picklist-checkbox-1"]').click({ multiple: true });
-    cy.get('[data-cy="picklist-all-button"]').find('span').should('contain', '✅ All');
-    
+    cy.get('[data-cy="picklist-all-button"]')
+      .find('span')
+      .should('contain', '✅ All');
+
     cy.get('[data-cy="picklist-checkbox-2"]').click({ multiple: true });
-    cy.get('[data-cy="picklist-all-button"]').find('span').should('contain', '🚫 All');
+    cy.get('[data-cy="picklist-all-button"]')
+      .find('span')
+      .should('contain', '🚫 All');
 
     cy.get('[data-cy="picklist-checkbox-1"]').click({ multiple: true });
-    cy.get('[data-cy="picklist-all-button"]').find('span').should('contain', '✅ All');
-  }); 
-
-  
+    cy.get('[data-cy="picklist-all-button"]')
+      .find('span')
+      .should('contain', '✅ All');
+  });
 });
