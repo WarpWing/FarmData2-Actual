@@ -67,21 +67,23 @@ echo "  Configured."
 echo ""
 
 echo "  Authenticating with GitHub..."
-echo "    The following will authenticate the FarmData2 development environment"
-echo "    with your GitHub account.  If you are not familiar with the options shown"
-echo "    the following are recommended as the easiest approach:"
-echo "      - What is your preferred protocol for Git operations on this host?"
-echo "        - HTTPS"
-echo "      - Authenticate Git with your GitHub credentials? (Y/n)"
-echo "        - Y"
-echo "      - How would you like to authenticate GitHub CLI?"
-echo "        - Login with a web browser"
-echo "          - Use your GitHub username and password to log in."
-echo ""
-while ! gh auth login --hostname GitHub.com || ! gh api user &> /dev/null; do
-    echo "Authentication failed. Clearing credentials and trying again..."
-    gh auth logout --hostname GitHub.com &> /dev/null
-    read -p "Press Enter to retry or Ctrl+C to exit..."
+while ! gh api user &> /dev/null; do
+    echo "    The following will authenticate the FarmData2 development environment"
+    echo "    with your GitHub account.  If you are not familiar with the options shown"
+    echo "    the following are recommended as the easiest approach:"
+    echo "      - What is your preferred protocol for Git operations on this host?"
+    echo "        - HTTPS"
+    echo "      - Authenticate Git with your GitHub credentials? (Y/n)"
+    echo "        - Y"
+    echo "      - How would you like to authenticate GitHub CLI?"
+    echo "        - Login with a web browser"
+    echo "          - Use your GitHub username and password to log in."
+    echo ""
+    if ! gh auth login --hostname GitHub.com; then
+        echo "Authentication failed. Clearing credentials and trying again..."
+        gh auth logout --hostname GitHub.com &> /dev/null
+        read -p "Press Enter to retry or Ctrl+C to exit..."
+    fi
 done
 echo "  Authenticated."
 
