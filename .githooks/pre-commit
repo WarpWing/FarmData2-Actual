@@ -25,10 +25,8 @@ fi
 check_modified_staged_files() {
   local modified_files=$(git diff --name-only --cached)
   for file in $modified_files; do
-    if [ -f "$file" ] && git diff --quiet "$file"; then
-      continue
-    else
-      return 0  # Found at least one modified staged file
+    if [ -f "$file" ] && ! git diff --quiet "$file"; then
+      return 0  # Found a modified staged file
     fi
   done
   return 1  # No modified staged files found
