@@ -1,6 +1,17 @@
 #!/bin/bash
 echo "Running FarmData2 pre-commit checks..."
 
+# Function to check if any staged files have been modified
+check_modified_staged_files() {
+  local modified_files=$(git diff --name-only --cached)
+  for file in $modified_files; do
+    if [ -f "$file" ] && ! git diff --quiet "$file"; then
+      return 0  # Found a modified staged file
+    fi
+  done
+  return 1  # No modified staged files found
+}
+
 # Prevent commits to the production branch
 BRANCH="$(git rev-parse --abbrev-ref HEAD)"
 if [ "$BRANCH" = "production" ]; then
@@ -21,45 +32,19 @@ if [ "$BRANCH" = "development" ]; then
   exit 255
 fi
 
-# Function to check if any staged files have been modified
-check_modified_staged_files() {
-  local modified_files=$(git diff --name-only --cached)
-  for file in $modified_files; do
-    if [ -f "$file" ] && ! git diff --quiet "$file"; then
-      return 0  # Found a modified staged file
-    fi
-  done
-  return 1  # No modified staged files found
-}
-
-# For all other branches, run the pre-commit checks using lint-staged.
-if npm run check:staged; then
-  # Check if any staged files were modified during the pre-commit checks
-  if check_modified_staged_files; then
-    echo
-    echo "Some staged files were modified during the pre-commit checks."
-    read -p "Would you like to stage these changes now? (y/N) " response
-    if [[ "$response" =~ ^[Yy] ]]; then
-      git add -u
-      echo "Changes have been staged. Running pre-commit checks again..."
-      if ! npm run check:staged; then
-        echo
-        echo "FarmData2 pre-commit checks failed after staging new changes."
-        echo "The commit will not be made."
-        echo "Review the output above for details."
-        echo "Fix the issues and try your commit again."
-        echo
-        exit 255
-      fi
-    else
-      echo "Changes were not staged. Please stage them manually if needed."
-    fi
-  fi
-  echo "Done."
-  echo "Making the commit."
+if check_modified_staged_files; then
   echo
-  exit 0
-else
+  echo "Some staged files have been modified but not restaged."
+  read -p "Would you like to stage these changes now? (y/N) " response
+  if [[ "$response" =~ ^[Yy] ]]; then
+    git add -u
+    echo "Changes have been staged."
+  else
+    echo "Changes were not staged. Please stage them manually if needed."
+    exit 255
+  fi
+fi
+if ! npm run check:staged; then
   echo
   echo "FarmData2 pre-commit checks failed."
   echo "The commit will not be made."
@@ -68,3 +53,7 @@ else
   echo
   exit 255
 fi
+echo "Done."
+echo "Making the commit."
+echo
+exit 0
